@@ -9,6 +9,7 @@ import { Post } from './components/Post';
 
 const posts = [
   {
+    id:1,
     author: {
       avatarUrl: 'https://github.com/felipe-barbos.png',
       name: 'Felipe Barbosa',
@@ -22,6 +23,7 @@ const posts = [
     publishedAt: new Date('2022-05-03 20:24:00')
   },
   {
+    id:2,
     author: {
       avatarUrl: 'https://github.com/maykbrito.png',
       name: 'Mayk Brito',
@@ -49,6 +51,7 @@ function App() {
           {posts.map(post => {
             return (
               <Post
+                key={post.id}
                 author={post.author}
                 content={post.content}
                 publishedAt={post.publishedAt}
