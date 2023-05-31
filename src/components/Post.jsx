@@ -13,6 +13,8 @@ export function Post({ author, publishedAt, content }) {
   // estado onde irá receber o ultimo valor enviado pela função
   const [newCommentText, setNewCommentText] = useState('');
 
+  console.log(newCommentText);
+
   const publishedAtFormatted = format(publishedAt, "d 'de' LLLL 'ás' HH:mm'h'", {
     locale: ptBR
   });
@@ -29,6 +31,7 @@ export function Post({ author, publishedAt, content }) {
 
   //estado = variáveis monitoradas pelo component
 
+  //função que permite criar um novo comentário
 function handleCreateNewComment(){
 
   event.preventDefault();
@@ -41,11 +44,33 @@ function handleCreateNewComment(){
  
 }
 
+//função que envia no novo comentário digitado para o estado newCommentText
 function handleNewCommentChange(){
 
+  //serve para retirar notificação do textarea
+  event.target.setCustomValidity('')
   //função onde irá capturar os valores digitados e enviá-los para o estado  newCommentText
   setNewCommentText(event.target.value);
 }
+
+function deleteComment(commentToDelete){
+
+  //Aplicando imutabilidade ao deletar um comentário imutabilidade --> as variáveis não sofrem mutação, nós criamos um novo valr/espaço
+
+  const commentsWithoudDeletedOne = comments.filter(comment => {
+    return comment !== commentToDelete;
+  });
+
+  setComments(commentsWithoudDeletedOne);
+}
+
+function handleNewCommentInvalid(){
+  
+  //Server para alterar as informações de avisa no textarea
+  event.target.setCustomValidity('Este campo é obrigatório!');
+}
+
+const isNewCommentEmpty = (newCommentText.length === 0);
 
   return (
     <article className={styles.post}>
@@ -88,20 +113,27 @@ function handleNewCommentChange(){
         placeholder='Deixe um comentário'
         value={newCommentText}
         onChange={handleNewCommentChange}
+        onInvalid={handleNewCommentInvalid}
+        required
         >
 
         </textarea>
 
         <footer>
-          <button type="submit">Publicar</button>
+          <button type="submit" disabled={isNewCommentEmpty}>Publicar</button>
         </footer>
 
       </form>
 
       <div className={styles.commentList}>
-
-        {comments.map(comment =>{
-            return <Comment key={comment} content={comment}/>
+        
+         {comments.map(comment =>{
+            return (
+              <Comment 
+                key={comment} 
+                content={comment} 
+                onDeleteComment={deleteComment}/>
+                )
           }
 
         )}
